@@ -1,9 +1,19 @@
 # database/db.py
 
 import sqlite3
+import os
+import sys
 from pathlib import Path
 
-DB_PATH = Path("database/mysqlite.db")
+def get_db_path():
+    if getattr(sys, 'frozen', False):
+        base_path = Path(sys._MEIPASS)
+    else:
+        base_path = Path(__file__).resolve().parent
+
+    return Path(os.getcwd()) / "mysqlite.db"
+
+DB_PATH = get_db_path()
 
 def connect_db():
     conn = sqlite3.connect(DB_PATH)
