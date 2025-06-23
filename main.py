@@ -10,6 +10,9 @@ def resource_path(relative_path):
         return os.path.join(sys._MEIPASS, relative_path)
     return os.path.abspath(relative_path)
 
+def adb_path():
+    return resource_path(os.path.join("utils", "adb.exe"))
+
 if __name__ == "__main__":
     init_db()
 

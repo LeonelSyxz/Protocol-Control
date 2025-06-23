@@ -1,14 +1,19 @@
 import time
 import threading
 import subprocess
-from database import db
 import os
+import sys
+from database import db
 
 class HLSController:
     def __init__(self):
         self.running = False
         self.thread = None
-        self.adb_path = os.path.join("utils", "adb.exe")
+        self.adb_path = self.get_adb_path()
+
+    def get_adb_path(self):
+        base_path = getattr(sys, '_MEIPASS', os.path.abspath("."))
+        return os.path.join(base_path, "utils", "adb.exe")
 
     def start_loop(self):
         if not self.running:
@@ -44,11 +49,11 @@ class HLSController:
                 try:
                     direction = direction.lower()
                     if os_type == "Google TV":
-                        connect_cmd = f"{self.adb_path} connect {ip}"
+                        connect_cmd = f"\"{self.adb_path}\" connect {ip}"
                         subprocess.run(connect_cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
                         key_event = direction_keyevents.get(direction, "KEYCODE_CHANNEL_UP")
-                        command = f"{self.adb_path} -s {ip} shell input keyevent {key_event}"
+                        command = f"\"{self.adb_path}\" -s {ip} shell input keyevent {key_event}"
                         subprocess.run(command, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                         print(f"[{name}] Google TV channel changed ({direction}).")
 
